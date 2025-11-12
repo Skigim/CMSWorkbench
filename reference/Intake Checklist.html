@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicaid Application Review Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://rsms.me/inter/inter.css');
+        html { font-family: 'Inter', sans-serif; }
+        body {
+            background-color: #f3f4f6;
+        }
+        .form-section {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem;
+        }
+        .form-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 1px #4f46e5;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+         .checkbox-label input[type="checkbox"], .radio-label input[type="radio"] {
+            height: 1rem;
+            width: 1rem;
+            border-radius: 0.25rem;
+            border-color: #d1d5db;
+            color: #4f46e5;
+            cursor: pointer;
+        }
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .btn-primary {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+        .btn-success {
+            background-color: #22c55e;
+            color: white;
+        }
+        .multiselect-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.5rem;
+        }
+        .hidden {
+            display: none;
+        }
+        .toggle-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.85rem;
+            background-color: #e5e7eb;
+            color: #374151;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s ease-in-out;
+        }
+        .toggle-badge.active {
+            background-color: #e0e7ff;
+            color: #3730a3;
+            border-color: #6366f1;
+            font-weight: 600;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">New Application Review</h1>
+            <p class="text-gray-600 mt-1">Medicaid Policy Assistant Intake Form</p>
+        </header>
+
+        <form id="reviewForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Left Column -->
+            <div class="md:col-span-1">
+                <div class="form-section">
+                    <h2 class="text-lg font-semibold text-gray-700">Initial Checks</h2>
+                    <div class="space-y-4">
+                        <div>
+                           <label class="form-label" for="appDate">App Date</label>
+                           <input type="text" id="appDate" name="appDate" class="form-input" placeholder="MM/DD/YYYY">
+                        </div>
+                        <div>
+                            <span class="form-label">Valid Application Checklist</span>
+                            <div class="space-y-2 mt-2 pl-2">
+                               <label class="checkbox-label"><input type="checkbox" id="checklistName" name="checklistName"> Name Provided</label>
+                               <label class="checkbox-label"><input type="checkbox" id="checklistAddress" name="checklistAddress"> Address Provided</label>
+                               <label class="checkbox-label"><input type="checkbox" id="checklistSignature" name="checklistSignature"> Signature Provided</label>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                           <label class="checkbox-label"><input type="checkbox" id="retro" name="retro"> Retro</label>
+                           <label class="checkbox-label"><input type="checkbox" id="waiver" name="waiver"> Waiver</label>
+                        </div>
+                         <div id="retroMonthsContainer" class="hidden">
+                            <label class="form-label" for="retroMonth">Retroactive Months (select all that apply)</label>
+                            <div class="multiselect-container p-2 border rounded-md">
+                                <label class="checkbox-label"><input type="checkbox" name="retroMonth" value="Jan"> Jan</label>
+                                <label class="checkbox-label"><input type="checkbox" name="retroMonth" value="Feb"> Feb</label>
+                                <label class="checkbox-label"><input type="checkbox" name="retroMonth" value="Mar"> Mar</label>
+                                <label class="checkbox-label"><input type="checkbox" name="retroMonth" value="Apr"> Apr</label>
+                                <label class="checkbox-label"><input type="checkbox" name="retroMonth" value="May"> May</label>
+                                <label class="checkbox-label"><input type="checkbox" name="retroMonth" value="Jun"> Jun</label>
+                                <label class="checkbox-label"><input type="checkbox" name="retroMonth" value="Jul"> Jul</label>
+                                <label class="checkbox-label"><input type="checkbox" name="retroMonth" value="Aug"> Aug</label>
+                                <label class="checkbox-label"><input type="checkbox" name="retroMonth" value="Sep"> Sep</label>
+                                <label class="checkbox-label"><input type="checkbox" name="retroMonth" value="Oct"> Oct</label>
+                                <label class="checkbox-label"><input type="checkbox" name="retroMonth" value="Nov"> Nov</label>
+                                <label class="checkbox-label"><input type="checkbox" name="retroMonth" value="Dec"> Dec</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="text-lg font-semibold text-gray-700">Applicant Information</h2>
+                    <div class="space-y-4">
+                        <div>
+                           <label class="form-label" for="applicantName">Applicant Name</label>
+                           <input type="text" id="applicantName" name="applicantName" class="form-input" placeholder="First Last">
+                        </div>
+                         <div>
+                           <label class="form-label">Preferred Contact Method(s)</label>
+                            <div id="contactMethodToggles" class="flex flex-wrap gap-2 mb-2">
+                                <span class="toggle-badge" data-value="US Mail">US Mail</span>
+                                <span class="toggle-badge" data-value="TextMessage">Text Message</span>
+                                <span class="toggle-badge" data-value="Email">Email</span>
+                            </div>
+                        </div>
+                         <div id="contactTextMessage" class="hidden">
+                           <label class="form-label" for="contactPhone">Phone Number</label>
+                           <input type="text" id="contactPhone" name="contactPhone" class="form-input" placeholder="(###) ###-####">
+                        </div>
+                        <div id="contactEmail" class="hidden">
+                           <label class="form-label" for="contactEmailInput">Email Address</label>
+                           <input type="email" id="contactEmailInput" name="contactEmailInput" class="form-input" placeholder="name@domain.com">
+                        </div>
+                        
+                        <div class="pt-2">
+                            <div class="flex items-center justify-between">
+                                <span class="form-label mb-0 font-medium text-gray-700">Has Authorized Representative?</span>
+                                <label for="hasAuthRep" class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="hasAuthRep" name="hasAuthRep" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="authRepDetails" class="hidden space-y-4 !mt-4">
+                            <div>
+                                <label class="form-label" for="authRepName">Authorized Representative Name</label>
+                                <input type="text" id="authRepName" name="authRepName" class="form-input">
+                            </div>
+                            <div>
+                                <label class="form-label" for="authRepPhone">Authorized Representative Phone</label>
+                                <input type="text" id="authRepPhone" name="authRepPhone" class="form-input" placeholder="(###) ###-####">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="form-label" for="livingArrangement">Living Arrangement</label>
+                            <select id="livingArrangement" name="livingArrangement" class="form-select">
+                                <option value="">Select arrangement...</option>
+                                <option value="Apt/House">Apt/House</option>
+                                <option value="Assisted Living">Assisted Living</option>
+                                <option value="LTC">Long-Term Care (LTC)</option>
+                            </select>
+                        </div>
+                         <label class="checkbox-label"><input type="checkbox" id="agedDisabledVerified" name="agedDisabledVerified"> Aged/Disabled Status Verified</label>
+                        <div>
+                           <label class="form-label" for="maritalStatus">Marital Status</label>
+                           <input type="text" id="maritalStatus" name="maritalStatus" class="form-input" placeholder="e.g., Single, Married">
+                        </div>
+                        <div>
+                           <label class="form-label" for="maritalStatusVerifiedDate">Marital Status Verification Date</label>
+                           <input type="text" id="maritalStatusVerifiedDate" name="maritalStatusVerifiedDate" class="form-input" placeholder="MM/DD/YYYY">
+                        </div>
+                         <label class="checkbox-label"><input type="checkbox" id="pregnancy" name="pregnancy"> Pregnancy</label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="text-lg font-semibold text-gray-700">Eligibility Verification</h2>
+                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="checkbox-label"><input type="checkbox" id="citizenship" name="citizenship"> Citizenship Verified</label>
+                        <label class="checkbox-label"><input type="checkbox" id="residency" name="residency"> Residency Verified</label>
+                     </div>
+                     <div class="mt-4">
+                        <label class="form-label" for="avsConsentDate">AVS Consent Date</label>
+                        <input type="text" id="avsConsentDate" name="avsConsentDate" class="form-input" placeholder="MM/DD/YYYY">
+                     </div>
+                     <div class="mt-4">
+                        <label class="form-label" for="voterForm">Voter Form</label>
+                         <div id="voterFormToggles" class="flex flex-wrap gap-2">
+                            <span class="toggle-badge" data-value="Requested">Requested</span>
+                            <span class="toggle-badge" data-value="Declined">Declined</span>
+                            <span class="toggle-badge" data-value="Not Answered">Not Answered</span>
+                        </div>
+                        <input type="hidden" id="voterForm" name="voterForm">
+                    </div>
+                    <div class="mt-4">
+                       <label class="checkbox-label"><input type="checkbox" id="ltcIndicator" name="ltcIndicator"> LTC Indicator</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="md:col-span-1">
+                 <div class="form-section">
+                    <h2 class="text-lg font-semibold text-gray-700">Verification Reviews</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="checkbox-label"><input type="checkbox" id="reviewVRs" name="reviewVRs"> Review VRs</label>
+                            <div class="mt-2">
+                               <label for="reviewVRsNotes" class="form-label sr-only">Notes:</label>
+                               <textarea id="reviewVRsNotes" name="reviewVRsNotes" class="form-textarea" rows="3" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="checkbox-label"><input type="checkbox" id="reviewPriorBudgets" name="reviewPriorBudgets"> Review Prior Budgets</label>
+                            <div class="mt-2">
+                               <label for="reviewPriorBudgetsNotes" class="form-label sr-only">Notes:</label>
+                               <textarea id="reviewPriorBudgetsNotes" name="reviewPriorBudgetsNotes" class="form-textarea" rows="3" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                         <div>
+                            <label class="checkbox-label"><input type="checkbox" id="reviewPriorNarr" name="reviewPriorNarr"> Review Prior Narratives</label>
+                            <div class="mt-2">
+                               <label for="reviewPriorNarrNotes" class="form-label sr-only">Notes:</label>
+                               <textarea id="reviewPriorNarrNotes" name="reviewPriorNarrNotes" class="form-textarea" rows="3" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label" for="interfaceSource">Review Interfaces (select sources)</label>
+                            <div class="multiselect-container p-2 border rounded-md">
+                               <label class="checkbox-label"><input type="checkbox" name="interfaceSource" value="SDX"> SDX</label>
+                               <label class="checkbox-label"><input type="checkbox" name="interfaceSource" value="BDE"> BDE</label>
+                               <label class="checkbox-label"><input type="checkbox" name="interfaceSource" value="SSA"> SSA</label>
+                               <label class="checkbox-label"><input type="checkbox" name="interfaceSource" value="MBI"> MBI</label>
+                               <label class="checkbox-label"><input type="checkbox" name="interfaceSource" value="CMS"> CMS</label>
+                            </div>
+                             <div class="mt-2">
+                               <label for="reviewInterfacesNotes" class="form-label sr-only">Notes:</label>
+                               <textarea id="reviewInterfacesNotes" name="reviewInterfacesNotes" class="form-textarea" rows="3" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="text-lg font-semibold text-gray-700">Final Actions</h2>
+                    <div class="space-y-4">
+                       <label class="checkbox-label"><input type="checkbox" id="avsSubmitted" name="avsSubmitted"> AVS Submitted</label>
+                       <label class="checkbox-label"><input type="checkbox" id="vrNeeded" name="vrNeeded"> VR Needed</label>
+                        <div>
+                           <label for="vrSent" class="form-label">VR Sent Details</label>
+                           <input type="text" id="vrSent" name="vrSent" class="form-input" placeholder="e.g., Sent on MM/DD/YYYY via mail">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="text-lg font-semibold text-gray-700">Mandatory Narrative</h2>
+                    <div class="relative">
+                        <pre id="narrativeTemplate" class="bg-gray-100 p-4 rounded-md text-sm whitespace-pre-wrap overflow-x-auto">MLTC: AVS Submitted
+Consent Date: <span id="narrativeConsentDate">MM/DD/YYYY</span>
+Submit Date: <span id="narrativeSubmitDate">MM/DD/YYYY</span>
+5 Day: <span id="narrative5DayDate">MM/DD/YYYY</span>
+11 Day: <span id="narrative11DayDate">MM/DD/YYYY</span></pre>
+                        <button type="button" id="copyNarrativeBtn" class="absolute top-2 right-2 btn btn-secondary text-xs px-2 py-1">Copy</button>
+                    </div>
+                    <div class="mt-4">
+                        <label for="knownInstitutions" class="form-label">Known Institutions</label>
+                        <input type="text" id="knownInstitutions" name="knownInstitutions" class="form-input" placeholder="Enter any known institutions">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Width Actions -->
+            <div class="md:col-span-2 flex justify-end space-x-3">
+                 <button type="button" id="resetBtn" class="btn btn-secondary">Reset Form</button>
+                 <button type="button" id="copyExportBtn" class="btn btn-secondary">Copy Export</button>
+                 <button type="button" id="exportBtn" class="btn btn-primary">Export as .txt</button>
+            </div>
+        </form>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('reviewForm');
+    const formId = 'medicaidReviewForm';
+
+    // --- UTILITY FUNCTIONS ---
+    const getFormattedDate = (offset = 0) => {
+        const date = new Date();
+        date.setDate(date.getDate() + offset);
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${month}/${day}/${year}`;
+    };
+
+    const applyMask = (element, mask) => {
+        if (!element) return;
+        const format = (value) => {
+            let i = 0;
+            let lastReplacedIndex = -1;
+            const filledMask = mask.replace(/#/g, (_, j) => {
+                if (i < value.length) {
+                    lastReplacedIndex = j;
+                    return value[i++];
+                }
+                return '#';
+            });
+            return filledMask.substring(0, lastReplacedIndex + 1);
+        };
+
+        element.addEventListener('input', (e) => {
+            const strippedValue = e.target.value.replace(/\D/g, '');
+            e.target.value = format(strippedValue);
+        });
+    };
+    
+    // --- NARRATIVE & DYNAMIC DISPLAY ---
+    const updateNarrativeDisplay = () => {
+        const consentDateVal = document.getElementById('avsConsentDate').value || 'MM/DD/YYYY';
+        document.getElementById('narrativeConsentDate').textContent = consentDateVal;
+    };
+
+    const setStaticNarrativeDates = () => {
+        document.getElementById('narrativeSubmitDate').textContent = getFormattedDate();
+        document.getElementById('narrative5DayDate').textContent = getFormattedDate(5);
+        document.getElementById('narrative11DayDate').textContent = getFormattedDate(11);
+    };
+
+
+    // --- FORM LOGIC ---
+     const contactDetails = {
+        TextMessage: document.getElementById('contactTextMessage'),
+        Email: document.getElementById('contactEmail')
+    };
+
+    const renderContactMethods = (activeMethods = []) => {
+        Object.values(contactDetails).forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('#contactMethodToggles .toggle-badge').forEach(badge => {
+            const value = badge.dataset.value;
+            if (activeMethods.includes(value)) {
+                badge.classList.add('active');
+                if (contactDetails[value]) {
+                    contactDetails[value].classList.remove('hidden');
+                }
+            } else {
+                badge.classList.remove('active');
+            }
+        });
+    };
+    
+    const setupConditionalFields = () => {
+        const retroCheckbox = document.getElementById('retro');
+        const retroMonthsContainer = document.getElementById('retroMonthsContainer');
+        const toggleRetro = () => retroMonthsContainer.classList.toggle('hidden', !retroCheckbox.checked);
+        retroCheckbox.addEventListener('change', toggleRetro);
+        
+        const authRepCheckbox = document.getElementById('hasAuthRep');
+        const authRepDetails = document.getElementById('authRepDetails');
+        const toggleAuthRep = () => authRepDetails.classList.toggle('hidden', !authRepCheckbox.checked);
+        authRepCheckbox.addEventListener('change', toggleAuthRep);
+        
+        // Initial state
+        toggleRetro(); 
+        toggleAuthRep();
+    };
+    
+    const validateEmail = (email) => {
+        const emailInput = document.getElementById('contactEmailInput');
+        const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (email && !re.test(email)) {
+            emailInput.style.borderColor = 'red';
+        } else {
+            emailInput.style.borderColor = '';
+        }
+    };
+
+    // --- DATA HANDLING ---
+    const saveForm = () => {
+        const data = {};
+        const formData = new FormData(form);
+
+        for (const [key, value] of formData.entries()) {
+             const allValues = formData.getAll(key);
+             if (allValues.length > 1) {
+                 data[key] = allValues;
+             } else {
+                 data[key] = value;
+             }
+        }
+        
+        const singleCheckboxes = ['checklistName', 'checklistAddress', 'checklistSignature', 'retro', 'waiver', 'agedDisabledVerified', 'pregnancy', 'ltcIndicator', 'reviewVRs', 'reviewPriorBudgets', 'reviewPriorNarr', 'avsSubmitted', 'vrNeeded', 'hasAuthRep', 'citizenship', 'residency'];
+        singleCheckboxes.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) data[id] = el.checked;
+        });
+
+        const activeContactMethods = [];
+        document.querySelectorAll('#contactMethodToggles .toggle-badge.active').forEach(badge => {
+            activeContactMethods.push(badge.dataset.value);
+        });
+        data.contactMethod = activeContactMethods;
+        
+        data.voterForm = document.getElementById('voterForm').value;
+
+        localStorage.setItem(formId, JSON.stringify(data));
+    };
+
+
+    const loadForm = () => {
+        let data = {};
+        try {
+            const savedData = localStorage.getItem(formId);
+            if (savedData) {
+                data = JSON.parse(savedData);
+            }
+        } catch (e) {
+            console.error("Error parsing localStorage data:", e);
+            localStorage.removeItem(formId); // Clear corrupted data
+        }
+
+        if (Object.keys(data).length > 0) {
+            Object.keys(data).forEach(key => {
+                const value = data[key];
+                if (key === 'contactMethod') return;
+                const elements = form.querySelectorAll(`[name="${key}"]`);
+                if (elements.length === 0) return;
+
+                if (elements.length > 1 && (elements[0].type === 'checkbox' || elements[0].type === 'radio')) {
+                    elements.forEach(el => {
+                        el.checked = Array.isArray(value) && value.includes(el.value);
+                    });
+                } else {
+                    const element = elements[0];
+                     if (element.type === 'checkbox') {
+                        element.checked = !!value;
+                    } else {
+                        element.value = value || '';
+                    }
+                }
+            });
+             if (data.voterForm) {
+                document.getElementById('voterForm').value = data.voterForm;
+                const voterBadge = document.querySelector(`#voterFormToggles .toggle-badge[data-value="${data.voterForm}"]`);
+                if (voterBadge) {
+                    voterBadge.classList.add('active');
+                }
+            }
+        }
+
+        renderContactMethods(data.contactMethod || []);
+        setupConditionalFields(); 
+        updateNarrativeDisplay(); 
+    };
+
+    const resetForm = () => {
+        if (confirm('Are you sure you want to reset the form? All entered data will be lost.')) {
+            form.reset();
+            localStorage.removeItem(formId);
+            renderContactMethods([]);
+            document.getElementById('voterForm').value = '';
+            document.querySelectorAll('#voterFormToggles .toggle-badge').forEach(b => b.classList.remove('active'));
+            setupConditionalFields();
+            updateNarrativeDisplay();
+        }
+    };
+    
+    const generateExportContent = () => {
+        let content = "MLTC: Initial application rec'd\n\n";
+        const data = JSON.parse(localStorage.getItem(formId)) || {};
+        const toYesNo = (val) => val ? 'Yes' : 'No';
+
+        // --- SECTION 1: Initial Checks ---
+        if(data.appDate) content += `App Date: ${data.appDate}\n`;
+        const isValid = data.checklistName && data.checklistAddress && data.checklistSignature;
+        content += `App Valid: ${toYesNo(isValid)}\n`;
+        
+        let retroLine = `Retro: ${toYesNo(data.retro)}`;
+        if (data.retro && data.retroMonth && Array.isArray(data.retroMonth) && data.retroMonth.length > 0) {
+            retroLine += ` | ${data.retroMonth.join(', ')}`;
+        }
+        content += retroLine + '\n';
+        content += `Waiver: ${toYesNo(data.waiver)}\n`;
+
+        // --- SECTION 2: Applicant Information ---
+        content += "\n";
+        if(data.applicantName) content += `Applicant Name: ${data.applicantName}\n`;
+        if(data.contactMethod && data.contactMethod.length > 0) content += `Preferred Contact Method(s): ${data.contactMethod.join(', ')}\n`;
+        if(data.contactEmailInput) content += `Email Address: ${data.contactEmailInput}\n`;
+        if(data.livingArrangement) content += `Living Arrangement: ${data.livingArrangement}\n`;
+        content += `Aged/Disabled Status Verified: ${toYesNo(data.agedDisabledVerified)}\n`;
+        
+        if (data.maritalStatus || data.maritalStatusVerifiedDate) {
+            let maritalLine = "Marital Status: ";
+            maritalLine += data.maritalStatus ? `${data.maritalStatus}` : "Not provided";
+            maritalLine += data.maritalStatusVerifiedDate ? ` | ${data.maritalStatusVerifiedDate}` : "";
+            content += maritalLine + '\n';
+        }
+        
+        if (data.hasAuthRep) {
+            let arLine = "AR Name: ";
+            arLine += data.authRepName ? `${data.authRepName}` : "Not provided";
+            arLine += data.authRepPhone ? ` | ${data.authRepPhone}` : "";
+            content += arLine + '\n';
+        }
+
+        content += `Pregnancy: ${toYesNo(data.pregnancy)}\n`;
+        
+        // --- SECTION 3: Eligibility Verification ---
+        content += "\n";
+        content += `Citizenship Verified: ${toYesNo(data.citizenship)}\n`;
+        content += `Residency Verified: ${toYesNo(data.residency)}\n`;
+        if(data.avsConsentDate) content += `AVS Consent Date: ${data.avsConsentDate}\n`;
+        if(data.voterForm) content += `Voter Form: ${data.voterForm}\n`;
+        content += `LTC Indicator: ${toYesNo(data.ltcIndicator)}\n`;
+        
+        // --- SECTION 4: Verification Reviews ---
+        content += "\n";
+        const reviewSections = [
+            { check: 'reviewVRs', notes: 'reviewVRsNotes', label: 'Review VRs' },
+            { check: 'reviewPriorBudgets', notes: 'reviewPriorBudgetsNotes', label: 'Review Prior Budgets' },
+            { check: 'reviewPriorNarr', notes: 'reviewPriorNarrNotes', label: 'Review Prior Narratives' },
+        ];
+        reviewSections.forEach(s => {
+             content += `${s.label}: ${toYesNo(data[s.check])}\n`;
+             if (data[s.notes]) content += `- ${data[s.notes]}\n`;
+        });
+        
+        let interfaceSource = data.interfaceSource;
+        if (interfaceSource) {
+            if (!Array.isArray(interfaceSource)) {
+                interfaceSource = [interfaceSource];
+            }
+            if (interfaceSource.length > 0) {
+                 content += `Review Interfaces: ${interfaceSource.join(', ')}\n`;
+                if (data.reviewInterfacesNotes) content += `- ${data.reviewInterfacesNotes}\n`;
+            }
+        }
+
+
+        // --- SECTION 5: Final Actions ---
+        content += "\n";
+        content += `AVS Submitted: ${toYesNo(data.avsSubmitted)}\n`;
+        content += `VR Needed: ${toYesNo(data.vrNeeded)}\n`;
+        if(data.vrSent) content += `VR Sent Details: ${data.vrSent}\n`;
+        if(data.knownInstitutions) content += `Known Institutions: ${data.knownInstitutions}\n`;
+        
+        return content;
+    }
+
+    // --- EXPORT & COPY ---
+    const showCopySuccess = (button) => {
+        const originalText = button.textContent;
+        const originalClasses = Array.from(button.classList);
+        
+        button.textContent = 'Copied!';
+        button.classList.remove('btn-secondary', 'btn-primary');
+        button.classList.add('btn-success');
+
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.classList.remove('btn-success');
+            originalClasses.forEach(c => button.classList.add(c));
+        }, 2000);
+    };
+
+    const exportData = () => {
+        const content = generateExportContent();
+        const blob = new Blob([content], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `medicaid_review_${getFormattedDate().replace(/\//g, '-')}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+    };
+
+    const copyExportData = () => {
+        const textToCopy = generateExportContent();
+        const tempTextarea = document.createElement('textarea');
+        tempTextarea.value = textToCopy;
+        document.body.appendChild(tempTextarea);
+        tempTextarea.select();
+        try {
+            document.execCommand('copy');
+            showCopySuccess(document.getElementById('copyExportBtn'));
+        } catch (err) {
+            alert('Failed to copy content.');
+        }
+        document.body.removeChild(tempTextarea);
+    }
+
+    const copyNarrative = () => {
+        const consentDate = document.getElementById('narrativeConsentDate').textContent;
+        const submitDate = document.getElementById('narrativeSubmitDate').textContent;
+        const fiveDayDate = document.getElementById('narrative5DayDate').textContent;
+        const elevenDayDate = document.getElementById('narrative11DayDate').textContent;
+        const knownInstitutions = document.getElementById('knownInstitutions').value || '______________________';
+
+        const textToCopy = `MLTC: AVS Submitted
+Consent Date: ${consentDate}
+Submit Date: ${submitDate}
+5 Day: ${fiveDayDate}
+11 Day: ${elevenDayDate}
+Known Institutions: ${knownInstitutions}`;
+
+        const tempTextarea = document.createElement('textarea');
+        tempTextarea.value = textToCopy;
+        document.body.appendChild(tempTextarea);
+        tempTextarea.select();
+        try {
+            document.execCommand('copy');
+            showCopySuccess(document.getElementById('copyNarrativeBtn'));
+        } catch (err) {
+            alert('Failed to copy narrative.');
+        }
+        document.body.removeChild(tempTextarea);
+    };
+
+    // --- EVENT LISTENERS ---
+    form.addEventListener('change', saveForm);
+    form.addEventListener('keyup', saveForm);
+
+    document.querySelectorAll('#contactMethodToggles .toggle-badge').forEach(badge => {
+        badge.addEventListener('click', () => {
+            badge.classList.toggle('active');
+            const value = badge.dataset.value;
+            const detailElement = contactDetails[value];
+            if(detailElement) {
+                detailElement.classList.toggle('hidden', !badge.classList.contains('active'));
+            }
+            saveForm();
+        });
+    });
+
+    document.querySelectorAll('#voterFormToggles .toggle-badge').forEach(badge => {
+        badge.addEventListener('click', () => {
+            const hiddenInput = document.getElementById('voterForm');
+            const isActive = badge.classList.contains('active');
+            document.querySelectorAll('#voterFormToggles .toggle-badge').forEach(b => b.classList.remove('active'));
+            if (!isActive) {
+                badge.classList.add('active');
+                hiddenInput.value = badge.dataset.value;
+            } else {
+                hiddenInput.value = '';
+            }
+            saveForm();
+        });
+    });
+
+    document.getElementById('avsConsentDate').addEventListener('input', updateNarrativeDisplay);
+    document.getElementById('exportBtn').addEventListener('click', exportData);
+    document.getElementById('copyExportBtn').addEventListener('click', copyExportData);
+    document.getElementById('resetBtn').addEventListener('click', resetForm);
+    document.getElementById('copyNarrativeBtn').addEventListener('click', copyNarrative);
+    document.getElementById('contactEmailInput').addEventListener('blur', (e) => validateEmail(e.target.value));
+
+    // --- INITIALIZATION ---
+    applyMask(document.getElementById('appDate'), '##/##/####');
+    applyMask(document.getElementById('contactPhone'), '(###) ###-####');
+    applyMask(document.getElementById('authRepPhone'), '(###) ###-####');
+    applyMask(document.getElementById('maritalStatusVerifiedDate'), '##/##/####');
+    applyMask(document.getElementById('avsConsentDate'), '##/##/####');
+    
+    setStaticNarrativeDates();
+    loadForm();
+});
+</script>
+</body>
+</html>
+
